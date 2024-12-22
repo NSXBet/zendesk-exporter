@@ -1,4 +1,4 @@
-module github.com/example/zendesk_exporter
+module github.com/nsxbet/zendesk_exporter
 
 go 1.23.4
 
