@@ -37,6 +37,13 @@ ZENDESK_EMAIL | Email for Zendesk API
 docker compose up
 ```
 
+### Deploy
+
+```bash
+docker build -t $REGISTRY/zendesk-exporter . --platform linux/amd64
+docker push $REGISTRY/zendesk-exporter
+```
+
 ## Exported Metrics
 
 ### Ticket Metrics
