@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/nsxbet/zendesk_exporter/collector"
+	"github.com/nsxbet/zendesk_exporter/internal/collector"
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/nukosuke/go-zendesk/zendesk"
@@ -44,8 +44,14 @@ func main() {
 	// Create and register collectors
 	allTimeCollector := collector.NewAllTimeTicketsCollector(zendeskClient)
 	recentCollector := collector.NewRecentTicketsCollector(zendeskClient)
+	tagsCollector := collector.NewTagsTicketsCollector(zendeskClient)
+	customFieldsCollector := collector.NewCustomFieldsCollector(zendeskClient)
+	ticketsCollector := collector.NewTicketsCollector(zendeskClient)
 	prometheus.MustRegister(allTimeCollector)
 	prometheus.MustRegister(recentCollector)
+	prometheus.MustRegister(tagsCollector)
+	prometheus.MustRegister(customFieldsCollector)
+	prometheus.MustRegister(ticketsCollector)
 
 	// Setup HTTP server
 	http.Handle(*metricsPath, promhttp.Handler())

@@ -1,0 +1,42 @@
+services:
+  zendesk-exporter:
+    build:
+      context: .
+    env_file:
+      - .env
+    ports:
+      - "9101:9101"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./hack/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=exemplar-storage'
+    network_mode: host
+    ports:
+      - "9090:9090"
+
+  promlens:
+    image: prom/promlens:latest
+    ports:
+      - "8080:8080"
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./hack/grafana-prometheus-datasource.yml:/etc/grafana/provisioning/datasources/prometheus.yml
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    ports:
+      - "3000:3000"
+
+volumes:
+  grafana-data:
